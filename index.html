@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Free Fire Diamonds - Top-Up WebApp (Production Supabase)</title>
+  <!-- Google Fonts: Plus Jakarta Sans for clean modern mobile typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Local Lucide Icons -->
+  <script src="js/lucide.min.js"></script>
+  <!-- Supabase JS Client -->
+  <script src="js/supabase.js"></script>
+</head>
+<body>
+
+  <div class="desktop-wrapper">
+    <!-- Mobile Screen Frame Shell -->
+    <main class="app-shell" id="appShell">
+
+      <!-- Status Bar Simulation -->
+      <div class="mobile-status-bar" id="statusBar">
+        <span class="status-time" id="statusClock">23:30</span>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <i data-lucide="signal" style="width: 12px; height: 12px;"></i>
+          <i data-lucide="wifi" style="width: 12px; height: 12px;"></i>
+          <i data-lucide="battery-charging" style="width: 14px; height: 14px;"></i>
+        </div>
+      </div>
+
+      <!-- Dynamic Header Bar -->
+      <header class="app-header" id="appHeader">
+        <div class="brand-logo-wrap" id="headerHomeLogoBtn">
+          <img src="assets/icons/freefire-logo.svg" alt="Free Fire" class="brand-logo-img">
+        </div>
+        <div class="header-right">
+          <button class="header-btn" id="headerMenuBtn" title="Menu">
+            <i data-lucide="menu" style="width: 22px; height: 22px;"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Toast Notifications Container -->
+      <div class="toast-container" id="toastContainer"></div>
+
+      <!-- Main Scrollable Content Area -->
+      <div class="app-content" id="appContent">
+
+        <!-- ==========================================
+             SCREEN 1: HOME SCREEN
+             ========================================== -->
+        <section class="screen active" id="screen-home">
+          <!-- Live Supabase Status Indicator -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="db-status-badge connected" id="dbStatusBadge">
+              <i data-lucide="database" style="width: 13px; height: 13px;"></i>
+              <span id="dbStatusText">Supabase Connected</span>
+            </span>
+            <span style="font-size: 11px; font-weight: 700; color: var(--text-secondary);" id="headerUserStatusText">Guest</span>
+          </div>
+
+          <!-- Hero Section -->
+          <div class="hero-banner">
+            <div class="hero-bg-overlay" style="background-image: url('assets/images/hero-banner.jpg');"></div>
+            <div class="hero-content">
+              <div class="hero-title-group">
+                <h1>FREE FIRE<br>DIAMONDS</h1>
+              </div>
+              <p class="hero-subtitle">
+                <span>Fast</span> • <span>Secure</span> • <span>Easy</span>
+              </p>
+              <button class="hero-btn" id="heroBuyBtn">
+                <span>Buy Now</span>
+                <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Choose Diamonds Section -->
+          <div class="section-title">
+            <span>Choose Diamonds</span>
+            <span style="font-size: 12px; font-weight: 700; color: var(--primary-blue); cursor: pointer;" id="viewAllPackagesLink">View All →</span>
+          </div>
+
+          <!-- 2x2 Diamonds Grid on Home (Dynamic from Supabase) -->
+          <div class="diamonds-grid" id="homeDiamondsGrid">
+            <!-- Rendered dynamically by JS from Supabase packages table -->
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="trust-row">
+            <div class="trust-item">
+              <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+              <span>Instant Delivery</span>
+            </div>
+            <div class="trust-item">
+              <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
+              <span>Secure Payment</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 2: DIAMONDS PACKAGES
+             ========================================== -->
+        <section class="screen" id="screen-packages">
+          <div class="packages-list" id="packagesListContainer">
+            <!-- Dynamically populated from Supabase packages -->
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 3: BUY DIAMONDS
+             ========================================== -->
+        <section class="screen" id="screen-buy">
+          <!-- Large Selected Package Showcase Card -->
+          <div class="selected-showcase-card" id="buySelectedShowcase">
+            <div class="showcase-diamond-wrap">
+              <img id="buyShowcaseImg" src="assets/images/diamond-single.jpg" alt="Selected Diamond" class="showcase-diamond-img">
+            </div>
+            <div class="showcase-diamond-title" id="buyShowcaseTitle">520 Diamonds</div>
+            <div class="showcase-diamond-bonus" id="buyShowcaseBonus">(+30 Bonus)</div>
+            <div class="showcase-diamond-price" id="buyShowcasePrice">$5.00</div>
+          </div>
+
+          <!-- Player ID Form -->
+          <div class="form-group">
+            <label class="form-label" for="playerIdInput">Player ID</label>
+            <div class="input-with-verify">
+              <div class="input-wrapper" style="flex:1;">
+                <span class="input-icon">
+                  <i data-lucide="gamepad-2" style="width: 18px; height: 18px;"></i>
+                </span>
+                <input type="number" id="playerIdInput" class="form-input" placeholder="Enter your Player ID" value="" autocomplete="off">
+              </div>
+              <button class="btn-verify-id" id="btnVerifyId">
+                <i data-lucide="search" style="width: 15px; height: 15px;"></i>
+                <span>Xaqiiji</span>
+              </button>
+            </div>
+            <div class="form-helper">
+              <i data-lucide="info" style="width: 14px; height: 14px;"></i>
+              <span>Player ID-gaaga waxaad ka helaysaa Free Fire profile-kaaga.</span>
+            </div>
+          </div>
+
+          <!-- Player Verification Result Card (hidden until verified) -->
+          <div class="player-verify-card" id="playerVerifyCard" style="display:none;">
+            <div class="player-verify-left">
+              <div class="player-verify-avatar">
+                <i data-lucide="user-circle" style="width: 28px; height: 28px; color: var(--primary-blue);"></i>
+              </div>
+              <div class="player-verify-info">
+                <div class="player-verify-name" id="playerVerifyNickname">—</div>
+                <div class="player-verify-meta">
+                  <span id="playerVerifyIdLabel">ID: —</span>
+                  <span class="pvm-sep">•</span>
+                  <span id="playerVerifyRegion">Region: —</span>
+                  <span class="pvm-sep">•</span>
+                  <span id="playerVerifyLevel">Lv —</span>
+                </div>
+              </div>
+            </div>
+            <i data-lucide="check-circle-2" style="width: 22px; height: 22px; color: var(--success); flex-shrink:0;"></i>
+          </div>
+
+          <!-- Somali Confirmation Warning Banner -->
+          <div class="player-wrong-warn" id="playerWrongWarn" style="display:none;">
+            <i data-lucide="alert-triangle" style="width: 16px; height: 16px; flex-shrink:0;"></i>
+            <span>Ma aha akoonkaaga? <strong>Dib u hubi ID-ga</strong> oo ku qor kii saxda ahaa.</span>
+          </div>
+
+          <!-- Payment Method Selection -->
+          <div class="section-title">Payment Method</div>
+          <div class="payment-methods-grid" id="paymentMethodsGrid">
+            <!-- Dynamic payment methods from Supabase -->
+          </div>
+
+          <!-- Continue Button -->
+          <button class="btn btn-primary" id="btnContinueToSummary" disabled>
+            <span>Continue</span>
+            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+          </button>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 4: ORDER SUMMARY
+             ========================================== -->
+        <section class="screen" id="screen-summary">
+          <!-- Package Card -->
+          <div class="summary-package-card">
+            <div class="summary-img-wrap">
+              <img id="summaryPackageImg" src="assets/images/diamond-single.jpg" alt="Diamond" class="summary-img">
+            </div>
+            <div class="summary-pkg-info">
+              <div class="summary-pkg-name" id="summaryPackageName">520 Diamonds</div>
+              <div class="summary-pkg-bonus" id="summaryPackageBonus">(+30 Bonus)</div>
+            </div>
+            <div class="summary-pkg-price" id="summaryPackagePrice">$5.00</div>
+          </div>
+
+          <!-- Order Details Card -->
+          <div class="summary-details-card">
+            <div class="summary-row">
+              <div class="summary-row-label">
+                <i data-lucide="user" style="width: 18px; height: 18px;"></i>
+                <span>Player ID</span>
+              </div>
+              <div class="summary-row-value" id="summaryPlayerIdVal">123456789</div>
+            </div>
+
+            <div class="summary-row" id="summaryNicknameRow" style="display:none;">
+              <div class="summary-row-label">
+                <i data-lucide="badge-check" style="width: 18px; height: 18px;"></i>
+                <span>Nickname</span>
+              </div>
+              <div class="summary-row-value" id="summaryNicknameVal" style="color:var(--primary-blue); font-weight:800;">—</div>
+            </div>
+
+            <div class="summary-row">
+              <div class="summary-row-label">
+                <i data-lucide="credit-card" style="width: 18px; height: 18px;"></i>
+                <span>Payment Method</span>
+              </div>
+              <div class="summary-row-value" id="summaryMethodVal">
+                <img src="assets/icons/zaad-logo.svg" alt="Payment Method" class="summary-badge-logo" id="summaryMethodLogo">
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Amount Card -->
+          <div class="summary-total-card">
+            <span class="summary-total-label">Total Amount</span>
+            <span class="summary-total-val" id="summaryTotalVal">$5.00</span>
+          </div>
+
+          <!-- Security / Instant Process Notice -->
+          <div class="info-notice-box">
+            <i data-lucide="shield-check" style="width: 20px; height: 20px;"></i>
+            <span>Your order will be processed instantly once payment is confirmed.</span>
+          </div>
+
+          <!-- Place Order Button -->
+          <button class="btn btn-primary" id="btnPlaceOrder">
+            <i data-lucide="lock" style="width: 16px; height: 16px;"></i>
+            <span>Place Order</span>
+          </button>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 5: PAYMENT SCREEN
+             ========================================== -->
+        <section class="screen" id="screen-payment">
+          <div class="payment-screen-content">
+            <!-- Payment Provider Header -->
+            <div class="payment-brand-header">
+              <div class="payment-header-logo-wrap">
+                <img src="assets/icons/zaad-logo.svg" alt="Payment Provider" class="payment-header-logo" id="paymentScreenLogo">
+              </div>
+              <div class="payment-provider-title" id="paymentScreenTitle">Pay with ZAAD</div>
+            </div>
+
+            <!-- Instructions Box -->
+            <div class="instructions-card">
+              <div class="instructions-card-icon">
+                <i data-lucide="info" style="width: 20px; height: 20px;"></i>
+              </div>
+              <ul class="instructions-steps" id="paymentInstructionsList">
+                <li>1. Enter your ZAAD number</li>
+                <li>2. Confirm the payment</li>
+                <li>3. Click "Verify Payment"</li>
+              </ul>
+            </div>
+
+            <!-- Phone Input Form -->
+            <div class="payment-input-card">
+              <div class="form-group">
+                <label class="form-label" for="paymentPhoneInput" id="paymentPhoneLabel">ZAAD Number</label>
+                <div class="input-wrapper">
+                  <span class="input-icon">
+                    <i data-lucide="smartphone" style="width: 18px; height: 18px;"></i>
+                  </span>
+                  <input type="tel" id="paymentPhoneInput" class="form-input" placeholder="e.g. 0631234567" value="0631234567">
+                </div>
+              </div>
+
+              <!-- Verify Payment Button -->
+              <button class="btn btn-primary" id="btnVerifyPayment">
+                <i data-lucide="check" style="width: 18px; height: 18px;"></i>
+                <span class="btn-text">Verify Payment</span>
+              </button>
+
+              <div class="security-footer-note">
+                <i data-lucide="lock" style="width: 14px; height: 14px;"></i>
+                <span>Your payment is 100% secure</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 6: PAYMENT SUCCESS
+             ========================================== -->
+        <section class="screen" id="screen-success">
+          <div class="success-screen-wrapper">
+            <!-- Big Blue Check Circle -->
+            <div class="success-check-circle">
+              <i data-lucide="check" style="width: 44px; height: 44px; stroke-width: 3;"></i>
+            </div>
+
+            <h2 class="success-title">Payment Successful!</h2>
+            <p class="success-desc">
+              Your order has been confirmed.<br>
+              The diamonds will be delivered to your Free Fire account shortly.
+            </p>
+
+            <!-- Order Details Card -->
+            <div class="success-order-box">
+              <div class="success-order-row">
+                <span class="success-order-label">Order ID:</span>
+                <span class="success-order-val" id="successOrderId">#FF-10001</span>
+              </div>
+              <div class="success-order-row">
+                <span class="success-order-label">Diamonds:</span>
+                <span class="success-order-val" id="successOrderDiamonds">520 (+30 Bonus)</span>
+              </div>
+              <div class="success-order-row">
+                <span class="success-order-label">Player ID:</span>
+                <span class="success-order-val" id="successOrderPlayerId">123456789</span>
+              </div>
+              <div class="success-order-row">
+                <span class="success-order-label">Payment Method:</span>
+                <span class="success-order-val" id="successOrderMethod">ZAAD</span>
+              </div>
+              <div class="success-order-row">
+                <span class="success-order-label">Amount Paid:</span>
+                <span class="success-order-val" id="successOrderAmount" style="color: var(--primary-blue); font-size: 15px;">$5.00</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <button class="btn btn-primary" id="btnSuccessBackHome" style="margin-bottom: 10px;">
+              <i data-lucide="home" style="width: 16px; height: 16px;"></i>
+              <span>Back to Home</span>
+            </button>
+
+            <button class="btn btn-secondary" id="btnSuccessViewOrders">
+              <i data-lucide="clipboard-list" style="width: 16px; height: 16px;"></i>
+              <span>View My Orders</span>
+            </button>
+
+            <!-- Free Fire Brand Motto Footer -->
+            <div class="success-footer-brand">
+              <div class="success-brand-title">FREE FIRE</div>
+              <div class="success-brand-motto">PLAY • FIGHT • WIN</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 7: MY ORDERS (REAL SUPABASE QUERY)
+             ========================================== -->
+        <section class="screen" id="screen-orders">
+          <div class="orders-list" id="ordersListContainer">
+            <!-- Dynamically populated from Supabase orders table -->
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 8: PROFILE (REAL AUTH & PROFILE)
+             ========================================== -->
+        <section class="screen" id="screen-profile">
+          <div class="profile-card">
+            <!-- User Info Row -->
+            <div class="profile-user-info">
+              <div class="profile-avatar-wrap">
+                <img src="assets/images/avatar.jpg" alt="User Profile" class="profile-avatar-img" id="profileAvatarImg">
+              </div>
+              <div class="profile-user-text">
+                <h2>
+                  <span id="profileUserName">Barkhad Jamac</span>
+                  <i data-lucide="badge-check" class="verified-icon" id="profileVerifiedBadge" style="width: 18px; height: 18px;"></i>
+                </h2>
+                <div class="profile-user-role" id="profileUserRole">Free Fire Player</div>
+                <div style="font-size: 11px; color: var(--text-muted);" id="profileUserEmail">barkhad@dimatop.so</div>
+              </div>
+            </div>
+
+            <!-- Stats Card (Blue Gradient) -->
+            <div class="profile-stats-card">
+              <div class="profile-stat-box">
+                <span class="profile-stat-label">
+                  <span>Total Orders</span>
+                  <i data-lucide="shield-check" style="width: 13px; height: 13px;"></i>
+                </span>
+                <span class="profile-stat-value" id="profileTotalOrdersVal">3</span>
+              </div>
+              <div class="profile-stat-divider"></div>
+              <div class="profile-stat-box">
+                <span class="profile-stat-label">
+                  <span>Diamonds Purchased</span>
+                </span>
+                <span class="profile-stat-value" id="profileDiamondsPurchasedVal">1,560</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menu Items List -->
+          <div class="profile-menu-list">
+            <div class="profile-menu-item" id="menuItemOrders">
+              <div class="profile-menu-left">
+                <i data-lucide="clipboard-list" style="width: 18px; height: 18px;"></i>
+                <span>My Orders</span>
+              </div>
+              <i data-lucide="chevron-right" class="profile-menu-chevron" style="width: 18px; height: 18px;"></i>
+            </div>
+
+            <div class="profile-menu-item" id="menuItemPaymentMethods">
+              <div class="profile-menu-left">
+                <i data-lucide="credit-card" style="width: 18px; height: 18px;"></i>
+                <span>Payment Methods</span>
+              </div>
+              <i data-lucide="chevron-right" class="profile-menu-chevron" style="width: 18px; height: 18px;"></i>
+            </div>
+
+            <div class="profile-menu-item" id="menuItemAdmin" style="display: none;">
+              <div class="profile-menu-left">
+                <i data-lucide="shield" style="width: 18px; height: 18px; color: #8B5CF6;"></i>
+                <span style="font-weight: 800; color: #8B5CF6;">Admin Panel</span>
+              </div>
+              <i data-lucide="chevron-right" class="profile-menu-chevron" style="width: 18px; height: 18px;"></i>
+            </div>
+
+            <div class="profile-menu-item" id="menuItemSupport">
+              <div class="profile-menu-left">
+                <i data-lucide="headphones" style="width: 18px; height: 18px;"></i>
+                <span>Support & Contact</span>
+              </div>
+              <i data-lucide="chevron-right" class="profile-menu-chevron" style="width: 18px; height: 18px;"></i>
+            </div>
+
+            <div class="profile-menu-item" id="menuItemAboutUs">
+              <div class="profile-menu-left">
+                <i data-lucide="info" style="width: 18px; height: 18px;"></i>
+                <span>About Us</span>
+              </div>
+              <i data-lucide="chevron-right" class="profile-menu-chevron" style="width: 18px; height: 18px;"></i>
+            </div>
+
+            <!-- Login or Logout dynamic row -->
+            <div class="profile-menu-item" id="menuItemAuthAction">
+              <div class="profile-menu-left" id="authActionLeftWrap">
+                <i data-lucide="log-in" style="width: 18px; height: 18px; color: var(--primary-blue);" id="authActionIcon"></i>
+                <span id="authActionText">Log In / Sign Up</span>
+              </div>
+              <i data-lucide="chevron-right" class="profile-menu-chevron" style="width: 18px; height: 18px;"></i>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 9: ADMIN DASHBOARD (PRODUCTION ROLE)
+             ========================================== -->
+        <section class="screen" id="screen-admin">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <div>
+              <h2 style="font-size: 18px; font-weight: 900; color: var(--text-primary);">DimaTop Admin</h2>
+              <div style="font-size: 11px; color: var(--text-secondary);">Real-time Supabase Database Management</div>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btnAdminExit">Exit Admin</button>
+          </div>
+
+          <!-- Platform Summary Stats -->
+          <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+              <span class="admin-stat-title">Platform Revenue</span>
+              <span class="admin-stat-val" id="adminStatRevenue">$124.00</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="admin-stat-title">Total Orders</span>
+              <span class="admin-stat-val" id="adminStatOrders">18</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="admin-stat-title">Active Packages</span>
+              <span class="admin-stat-val" id="adminStatPackages">6</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="admin-stat-title">Registered Gamers</span>
+              <span class="admin-stat-val" id="adminStatUsers">12</span>
+            </div>
+          </div>
+
+          <!-- Admin Filter & Sub-Nav Tabs -->
+          <div class="admin-nav-tabs">
+            <button class="admin-tab-btn active" data-admin-tab="orders">Manage Orders</button>
+            <button class="admin-tab-btn" data-admin-tab="packages">Packages Catalogue</button>
+            <button class="admin-tab-btn" data-admin-tab="support">Support Messages</button>
+          </div>
+
+          <!-- Admin Tab 1: Orders -->
+          <div id="adminTabOrders">
+            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+              <input type="text" id="adminOrderSearch" class="form-input" style="height: 38px; padding-left: 14px; font-size: 13px;" placeholder="Search Player ID or Order #...">
+            </div>
+            <div id="adminOrdersContainer">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Admin Tab 2: Packages -->
+          <div id="adminTabPackages" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-weight: 800; font-size: 14px;">Diamond Packages</span>
+              <button class="btn btn-primary btn-sm" id="btnAdminAddPackage">+ Add Package</button>
+            </div>
+            <div id="adminPackagesContainer">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Admin Tab 3: Support -->
+          <div id="adminTabSupport" style="display: none;">
+            <div id="adminSupportContainer">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.app-content -->
+
+      <!-- ==========================================
+           FIXED BOTTOM NAVIGATION
+           ========================================== -->
+      <nav class="bottom-nav" id="bottomNav">
+        <button class="nav-tab-btn active" data-screen="home">
+          <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+          <span>Home</span>
+        </button>
+
+        <button class="nav-tab-btn" data-screen="packages">
+          <i data-lucide="gem" style="width: 20px; height: 20px;"></i>
+          <span>Packages</span>
+        </button>
+
+        <button class="nav-tab-btn" data-screen="orders">
+          <i data-lucide="clipboard-list" style="width: 20px; height: 20px;"></i>
+          <span>Orders</span>
+        </button>
+
+        <button class="nav-tab-btn" data-screen="profile">
+          <i data-lucide="user" style="width: 20px; height: 20px;"></i>
+          <span>Profile</span>
+        </button>
+      </nav>
+
+      <!-- ==========================================
+           AUTHENTICATION MODAL (SUPABASE AUTH)
+           ========================================== -->
+      <div class="modal-overlay" id="authModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title" id="authModalTitle">Free Fire Top-Up Account</h3>
+            <button class="modal-close-btn" data-close-modal="authModal">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+
+          <!-- Auth Switcher Tabs -->
+          <div class="auth-tabs">
+            <button class="auth-tab-btn active" data-auth-mode="login">Log In</button>
+            <button class="auth-tab-btn" data-auth-mode="signup">Sign Up</button>
+            <button class="auth-tab-btn" data-auth-mode="forgot">Forgot</button>
+          </div>
+
+          <!-- Form 1: Log In -->
+          <form class="auth-form active" id="formLogin">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><i data-lucide="mail" style="width: 18px; height: 18px;"></i></span>
+                <input type="email" id="loginEmail" class="form-input" placeholder="gamer@example.com" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><i data-lucide="lock" style="width: 18px; height: 18px;"></i></span>
+                <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btnLoginSubmit" style="margin-top: 8px;">
+              <span class="btn-text">Log In</span>
+            </button>
+          </form>
+
+          <!-- Form 2: Sign Up -->
+          <form class="auth-form" id="formSignup">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><i data-lucide="user" style="width: 18px; height: 18px;"></i></span>
+                <input type="text" id="signupFullName" class="form-input" placeholder="e.g. Barkhad Jamac" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Mobile Phone Number</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><i data-lucide="smartphone" style="width: 18px; height: 18px;"></i></span>
+                <input type="tel" id="signupPhone" class="form-input" placeholder="e.g. 0631234567" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><i data-lucide="mail" style="width: 18px; height: 18px;"></i></span>
+                <input type="email" id="signupEmail" class="form-input" placeholder="gamer@example.com" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><i data-lucide="lock" style="width: 18px; height: 18px;"></i></span>
+                <input type="password" id="signupPassword" class="form-input" placeholder="At least 6 characters" minlength="6" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btnSignupSubmit" style="margin-top: 8px;">
+              <span class="btn-text">Create Account</span>
+            </button>
+          </form>
+
+          <!-- Form 3: Forgot Password -->
+          <form class="auth-form" id="formForgot">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+              Enter your email address and Supabase will send you a password reset link.
+            </p>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><i data-lucide="mail" style="width: 18px; height: 18px;"></i></span>
+                <input type="email" id="forgotEmail" class="form-input" placeholder="gamer@example.com" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btnForgotSubmit" style="margin-top: 8px;">
+              <span class="btn-text">Send Reset Link</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           INTERACTIVE NOTIFICATIONS DRAWER
+           ========================================== -->
+      <div class="modal-overlay" id="notificationsModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title">Notifications</h3>
+            <button class="modal-close-btn" data-close-modal="notificationsModal">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+          <div id="notificationsListContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+            <!-- Rendered dynamically -->
+          </div>
+          <button class="btn btn-outline" data-close-modal="notificationsModal">Close</button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           SUPPORT & CONTACT MODAL (WITH REAL TICKET FORM)
+           ========================================== -->
+      <div class="modal-overlay" id="supportModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title">Somali Customer Support</h3>
+            <button class="modal-close-btn" data-close-modal="supportModal">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+            24/7 dedicated assistance for your Free Fire top-ups in Somali or English.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+            <a href="https://wa.me/252634444444" target="_blank" class="btn btn-outline" style="justify-content: flex-start; text-decoration: none;">
+              <i data-lucide="message-circle" style="color: #25D366; width: 18px; height: 18px;"></i>
+              <span>WhatsApp: +252 (63) 444-4444</span>
+            </a>
+            <a href="tel:+252615555555" class="btn btn-outline" style="justify-content: flex-start; text-decoration: none;">
+              <i data-lucide="phone-call" style="color: var(--primary-blue); width: 18px; height: 18px;"></i>
+              <span>Hormuud Hotline: +252 (61) 555-5555</span>
+            </a>
+          </div>
+
+          <!-- Submit Ticket Form to Supabase -->
+          <div style="border-top: 1px solid var(--border-color); padding-top: 14px;">
+            <div style="font-weight: 800; font-size: 14px; margin-bottom: 10px;">Send a Direct Message</div>
+            <form id="formSupportTicket">
+              <div class="form-group" style="margin-bottom: 10px;">
+                <input type="text" id="supportSubject" class="form-input" style="height: 42px; padding-left: 14px;" placeholder="Subject (e.g. Diamond delay)" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 12px;">
+                <textarea id="supportMessage" class="form-input" style="height: 70px; padding: 10px 14px; resize: none;" placeholder="Write your message..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" id="btnSubmitTicket">
+                <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+                <span class="btn-text">Send Message</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           PAYMENT METHODS MODAL
+           ========================================== -->
+      <div class="modal-overlay" id="paymentMethodsModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title">Payment Methods</h3>
+            <button class="modal-close-btn" data-close-modal="paymentMethodsModal">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px;">
+            <div class="card" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="assets/icons/zaad-logo.svg" alt="ZAAD" style="height: 24px;">
+                <div>
+                  <div style="font-weight: 800; font-size: 13px;">ZAAD Telesom</div>
+                  <div style="font-size: 12px; color: var(--text-secondary);">+252 63 1234567</div>
+                </div>
+              </div>
+              <span class="badge-status completed">Default</span>
+            </div>
+
+            <div class="card" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="assets/icons/evc-logo.svg" alt="EVC Plus" style="height: 24px;">
+                <div>
+                  <div style="font-weight: 800; font-size: 13px;">EVC Plus Hormuud</div>
+                  <div style="font-size: 12px; color: var(--text-secondary);">+252 61 9876543</div>
+                </div>
+              </div>
+              <span class="bonus-badge">Active</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" data-close-modal="paymentMethodsModal">Done</button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           ABOUT US MODAL
+           ========================================== -->
+      <div class="modal-overlay" id="aboutModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title">About Free Fire Diamonds</h3>
+            <button class="modal-close-btn" data-close-modal="aboutModal">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+          <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px;">
+            <p style="margin-bottom: 10px;">
+              <strong>Free Fire Diamonds Somalia</strong> is the #1 trusted instant top-up service dedicated to the Somali gaming community.
+            </p>
+            <p style="margin-bottom: 10px;">
+              Direct integration with ZAAD Mobile Money and EVC Plus ensures your diamonds reach your Garena Free Fire account in less than 60 seconds with 100% guarantee.
+            </p>
+            <p>
+              Supabase Project: <code style="color: var(--primary-blue);">bacgsctnupxconexfgih</code><br>
+              Server Status: <span style="color: var(--success); font-weight: 700;">● Online & Instant Delivery Active</span>
+            </p>
+          </div>
+          <button class="btn btn-primary" data-close-modal="aboutModal">Got it</button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           ORDER RECEIPT DETAILS MODAL
+           ========================================== -->
+      <div class="modal-overlay" id="orderDetailModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title" id="receiptModalTitle">Order Receipt</h3>
+            <button class="modal-close-btn" data-close-modal="orderDetailModal">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+          <div id="receiptModalBody" style="margin-bottom: 18px;">
+            <!-- Populated dynamically -->
+          </div>
+          <button class="btn btn-primary" data-close-modal="orderDetailModal">Close Receipt</button>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           ADMIN ADD PACKAGE MODAL
+           ========================================== -->
+      <div class="modal-overlay" id="adminAddPackageModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title">Add Diamond Package</h3>
+            <button class="modal-close-btn" data-close-modal="adminAddPackageModal">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+          <form id="formAdminAddPackage">
+            <div class="form-group">
+              <label class="form-label">Package Name</label>
+              <input type="text" id="adminPkgName" class="form-input" style="padding-left: 14px;" placeholder="e.g. 100 Diamonds" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Diamond Amount</label>
+              <input type="number" id="adminPkgDiamonds" class="form-input" style="padding-left: 14px;" placeholder="100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bonus Diamonds</label>
+              <input type="number" id="adminPkgBonus" class="form-input" style="padding-left: 14px;" placeholder="0" value="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Price (USD)</label>
+              <input type="number" step="0.5" id="adminPkgPrice" class="form-input" style="padding-left: 14px;" placeholder="1.00" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Create Package</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ==========================================
+           SIDE DRAWER MENU MODAL
+           ========================================== -->
+      <div class="modal-overlay" id="sideDrawerModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <img src="assets/icons/freefire-logo.svg" alt="Free Fire" style="height: 22px;">
+            </div>
+            <button class="modal-close-btn" data-close-modal="sideDrawerModal">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+            <button class="btn btn-outline drawer-nav-link" data-goto="home" style="justify-content: flex-start;">
+              <i data-lucide="home" style="width: 18px; height: 18px; color: var(--primary-blue);"></i>
+              <span>Home Shop</span>
+            </button>
+            <button class="btn btn-outline drawer-nav-link" data-goto="packages" style="justify-content: flex-start;">
+              <i data-lucide="gem" style="width: 18px; height: 18px; color: var(--primary-blue);"></i>
+              <span>Diamond Packages</span>
+            </button>
+            <button class="btn btn-outline drawer-nav-link" data-goto="orders" style="justify-content: flex-start;">
+              <i data-lucide="clipboard-list" style="width: 18px; height: 18px; color: var(--primary-blue);"></i>
+              <span>Order History</span>
+            </button>
+            <button class="btn btn-outline drawer-nav-link" data-goto="profile" style="justify-content: flex-start;">
+              <i data-lucide="user" style="width: 18px; height: 18px; color: var(--primary-blue);"></i>
+              <span>Gamer Profile</span>
+            </button>
+            <button class="btn btn-outline drawer-nav-link" data-goto="admin" id="drawerAdminBtn" style="justify-content: flex-start; color: #8B5CF6;">
+              <i data-lucide="shield" style="width: 18px; height: 18px; color: #8B5CF6;"></i>
+              <span>Admin Dashboard</span>
+            </button>
+          </div>
+          <button class="btn btn-secondary" data-close-modal="sideDrawerModal">Close Menu</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Application Logic -->
+  <script src="js/app.js"></script>
+</body>
+</html>

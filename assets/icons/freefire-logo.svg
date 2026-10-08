@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 50" width="220" height="50">
+  <defs>
+    <linearGradient id="knifeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9900" />
+      <stop offset="100%" stop-color="#FF4500" />
+    </linearGradient>
+  </defs>
+  <!-- Stylized FREE FIRE text -->
+  <g fill="#102A56" font-family="'Impact', 'Arial Black', sans-serif" font-weight="900" font-size="28" letter-spacing="2">
+    <text x="10" y="34">FREE</text>
+    <!-- Stylized knife blade icon in middle -->
+    <path d="M 98 12 L 105 15 L 101 27 L 106 30 L 100 38 L 95 38 L 96 30 L 92 27 Z" fill="url(#knifeGrad)" />
+    <text x="115" y="34">FIRE</text>
+  </g>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <defs>
+    <linearGradient id="zaadGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#008837" />
+      <stop offset="100%" stop-color="#00A651" />
+    </linearGradient>
+  </defs>
+  <!-- Stylized ZAAD Text -->
+  <text x="80" y="28" font-family="'Arial Black', 'Helvetica Black', 'Impact', sans-serif" font-weight="900" font-size="28" fill="url(#zaadGrad)" text-anchor="middle" letter-spacing="1.5">ZAAD</text>
+  <!-- Red Arc Accent -->
+  <path d="M 38 33 Q 80 40 122 33" stroke="#E31E24" stroke-width="2.5" fill="none" stroke-linecap="round" />
+  <!-- Subtitle MOBILE MONEY -->
+  <text x="80" y="44" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-size="7" fill="#008837" text-anchor="middle" letter-spacing="3">MOBILE MONEY</text>
+</svg>

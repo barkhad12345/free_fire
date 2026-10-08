@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <defs>
+    <linearGradient id="evcBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00529B" />
+      <stop offset="100%" stop-color="#0072CE" />
+    </linearGradient>
+  </defs>
+  <!-- Stylized EVC Text -->
+  <text x="68" y="30" font-family="'Arial Black', 'Helvetica Black', sans-serif" font-weight="900" font-size="28" fill="url(#evcBlue)" letter-spacing="1">EVC</text>
+  <!-- Orange swoosh / plus circle -->
+  <circle cx="126" cy="18" r="8" fill="#F37021" />
+  <path d="M 126 13 L 126 23 M 121 18 L 131 18" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" />
+  <!-- Subtitle EVC Plus -->
+  <text x="80" y="44" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-size="7.5" fill="#00529B" text-anchor="middle" letter-spacing="2.5">EVC PLUS</text>
+</svg>
